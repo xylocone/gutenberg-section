@@ -1,0 +1,55 @@
+/*=============================================
+=            Settings Sidebar styles          =
+=============================================*/
+
+/* To change with more specific selectors and better values for margin and padding */
+
+.block-editor-block-inspector fieldset {
+	margin: 8px;
+	padding: 8px;
+}
+
+/*=====  End of Settings Sidebar styles  ======*/
+
+$pointPositions: (
+	top: (
+		top: 0,
+		left: 0,
+	),
+	right: (
+		top: 0,
+		right: 0,
+	),
+	bottom: (
+		bottom: 0,
+		right: 0,
+	),
+	left: (
+		bottom: 0,
+		left: 0,
+	),
+);
+
+.section__point {
+	// Positioning
+	position: absolute;
+
+	// Display and Box Model
+	height: 16px;
+	width: 16px;
+
+	// Others
+	cursor: move;
+	background-color: whitesmoke;
+	border: 4px solid tomato;
+	border-radius: 50%;
+	box-shadow: 0 0 2px solid lightslategray;
+
+	@each $pos, $data in $pointPositions {
+		&.section__point--#{$pos} {
+			@each $property, $value in $data {
+				#{$property}: $value;
+			}
+		}
+	}
+}

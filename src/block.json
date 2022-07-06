@@ -1,0 +1,67 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "blaze/section",
+	"version": "0.1.0",
+	"title": "Section",
+	"category": "widgets",
+	"icon": "heart",
+	"description": "A fixed positioned section",
+	"supports": {
+		"html": false,
+		"color": {
+			"background": true,
+			"text": false,
+			"gradients": false,
+			"link": false
+		}
+	},
+	"attributes": {
+		"source": {
+			"type": "string",
+			"default": ""
+		},
+		"corners": {
+			"type": "object",
+			"default": {
+				"top": [0, 0],
+				"right": [100, 0],
+				"bottom": [100, 100],
+				"left": [0, 100]
+			}
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"isLabelFixed": {
+			"type": "boolean",
+			"default": true
+		},
+		"labelAlignX": {
+			"type": "string",
+			"default": "center"
+		},
+		"labelAlignY": {
+			"type": "string",
+			"default": "center"
+		},
+		"labelPos": {
+			"type": "array",
+			"default": [0, 0]
+		},
+		"style": {
+			"type": "object",
+			"default": {
+				"color": {
+					"background": "tomato"
+				}
+			}
+		}
+	},
+	"parent": ["blaze/jumbotron"],
+	"textdomain": "section",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}
