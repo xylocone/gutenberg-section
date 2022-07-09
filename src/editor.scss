@@ -11,45 +11,39 @@
 
 /*=====  End of Settings Sidebar styles  ======*/
 
-$pointPositions: (
-	top: (
-		top: 0,
-		left: 0,
-	),
-	right: (
-		top: 0,
-		right: 0,
-	),
-	bottom: (
-		bottom: 0,
-		right: 0,
-	),
-	left: (
-		bottom: 0,
-		left: 0,
-	),
-);
+.section__container {
+	&.is-selected {
+		.section__background {
+			filter: drop-shadow(10px 2px 2px rgb(41, 11, 11));
+		}
+		&::after {
+			box-shadow: none !important;
+		}
+	}
+}
 
-.section__point {
+.section__point-wrapper {
 	// Positioning
 	position: absolute;
+	top: 0;
+	left: 0;
 
 	// Display and Box Model
-	height: 16px;
-	width: 16px;
+	display: inline-block;
 
-	// Others
-	cursor: move;
-	background-color: whitesmoke;
-	border: 4px solid tomato;
-	border-radius: 50%;
-	box-shadow: 0 0 2px solid lightslategray;
+	.section__point {
+		// Display and Box Model
+		display: inline-block;
+		height: 16px;
+		width: 16px;
 
-	@each $pos, $data in $pointPositions {
-		&.section__point--#{$pos} {
-			@each $property, $value in $data {
-				#{$property}: $value;
-			}
-		}
+		// Others
+		cursor: move;
+		background-color: whitesmoke;
+		border: 4px solid tomato;
+		border-radius: 50%;
+		box-shadow: 0 0 2px lightslategray;
+
+		transform: translate(-50%, -50%);
 	}
 }

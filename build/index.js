@@ -1,6 +1,367 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/AttributesContext.jsx":
+/*!***********************************!*\
+  !*** ./src/AttributesContext.jsx ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+const AttributesContext = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createContext)();
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AttributesContext);
+
+/***/ }),
+
+/***/ "./src/Dropdown.jsx":
+/*!**************************!*\
+  !*** ./src/Dropdown.jsx ***!
+  \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Dropdown)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+
+/**
+ * Render a Dropdown menu with the given options
+ * @param {Object} props Properties
+ * @returns A JSX Dropdown menu
+ */
+function Dropdown(_ref) {
+  let {
+    options,
+    value,
+    onChange
+  } = _ref;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    onChange: e => onChange(e.currentTarget.value)
+  }, options.map(option => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: option.value,
+    selected: option.value == value
+  }, option.title)));
+}
+
+/***/ }),
+
+/***/ "./src/MorphableRect.jsx":
+/*!*******************************!*\
+  !*** ./src/MorphableRect.jsx ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _AttributesContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AttributesContext */ "./src/AttributesContext.jsx");
+/* harmony import */ var _Points__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Points */ "./src/Points.jsx");
+
+
+
+
+const MorphableRect = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.forwardRef)((props, ref) => {
+  const {
+    attributes,
+    updateAttribute,
+    parentDimensions,
+    isSelected
+  } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useContext)(_AttributesContext__WEBPACK_IMPORTED_MODULE_1__["default"]);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "section__background",
+    ref: ref,
+    style: getCSSvars()
+  }), props.children, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "section__content"
+  }), isSelected && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Points__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    defaultPositions: getPointsDefaultPositions(),
+    positions: Object.keys(attributes.corners),
+    onDrag: updateCorner,
+    onStop: preventExitingView
+  }));
+
+  function getPointsDefaultPositions() {
+    const {
+      corners
+    } = attributes;
+    const {
+      width,
+      height
+    } = props.parentDimensions;
+    let defaultPositions = {};
+
+    for (const cornerType in corners) {
+      defaultPositions[cornerType] = {
+        x: 0,
+        y: 0
+      };
+      defaultPositions[cornerType].x = corners[cornerType][0] * width / 100;
+      defaultPositions[cornerType].y = corners[cornerType][1] * height / 100;
+    }
+
+    return defaultPositions;
+  }
+
+  function getClipPathValue() {
+    const {
+      top,
+      right,
+      bottom,
+      left
+    } = attributes.corners;
+    return `polygon(${top[0]}% ${top[1]}%, ${right[0]}% ${right[1]}%, ${bottom[0]}% ${bottom[1]}%, ${left[0]}% ${left[1]}%)`;
+  }
+
+  function getCSSvars() {
+    var _attributes$style$col;
+
+    return {
+      "--parent-height": `${parentDimensions.height}px`,
+      "--parent-width": `${parentDimensions.width}px`,
+      "--background-clip-path": getClipPathValue(),
+      "--background": (_attributes$style$col = attributes.style?.color.background) !== null && _attributes$style$col !== void 0 ? _attributes$style$col : `var(--wp--preset--color--${attributes.backgroundColor})`
+    };
+  }
+
+  function updateCorner(cornerType, x, y) {
+    const {
+      width,
+      height
+    } = parentDimensions;
+    updateAttribute("corners")({ ...attributes.corners,
+      [cornerType]: [100 * x / width, 100 * y / height] // save as percentages
+
+    });
+  }
+
+  function preventExitingView(cornerType, x, y) {
+    const {
+      width,
+      height
+    } = parentDimensions;
+    if (x < 0) x = 0;else if (x > width) x = width;
+    if (y < 0) y = 0;else if (y > height) y = height;
+    updateCorner(cornerType, x, y);
+  }
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MorphableRect);
+
+/***/ }),
+
+/***/ "./src/Points.jsx":
+/*!************************!*\
+  !*** ./src/Points.jsx ***!
+  \************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Points)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_draggable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-draggable */ "./node_modules/react-draggable/build/cjs/cjs.js");
+/* harmony import */ var react_draggable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_draggable__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+function Points(_ref) {
+  let {
+    positions,
+    defaultPositions,
+    onDrag,
+    onStop
+  } = _ref;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, positions.map((pos, index) => {
+    {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Point, {
+        onDrag: (x, y) => onDrag(pos, x, y),
+        onStop: (x, y) => onStop(pos, x, y),
+        key: index,
+        defaultPosition: defaultPositions[pos]
+      });
+    }
+  }));
+}
+
+function Point(_ref2) {
+  let {
+    defaultPosition,
+    onDrag,
+    onStop
+  } = _ref2;
+  const MOVEMENT_THRESHOLD = 0.1;
+  const pointRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_draggable__WEBPACK_IMPORTED_MODULE_1__.DraggableCore, {
+    onDrag: (e, _ref3) => {
+      let {
+        x,
+        y,
+        deltaX,
+        deltaY
+      } = _ref3;
+      return handleDrag(x, y, deltaX, deltaY, onDrag);
+    },
+    onStop: (e, _ref4) => {
+      let {
+        x,
+        y
+      } = _ref4;
+      return handleStop(x, y, onStop);
+    }
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "section__point-wrapper",
+    style: {
+      transform: `translate(${defaultPosition.x}px, ${defaultPosition.y}px)`,
+      transition: "transform 0.1s linear"
+    }
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "section__point"
+  })));
+
+  function handleDrag(x, y, deltaX, deltaY, callback) {
+    if (deltaX * deltaY > MOVEMENT_THRESHOLD) {
+      pointRef.current.style.transform = `translate(${x}px, ${y}px)`;
+      callback(x, y);
+    }
+  }
+
+  function handleStop(x, y, callback) {
+    callback(x, y);
+  }
+}
+
+/***/ }),
+
+/***/ "./src/SidebarSettings.jsx":
+/*!*********************************!*\
+  !*** ./src/SidebarSettings.jsx ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ SidebarSettings)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var change_case__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! change-case */ "./node_modules/capital-case/dist.es2015/index.js");
+/* harmony import */ var _AttributesContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AttributesContext */ "./src/AttributesContext.jsx");
+/* harmony import */ var _Dropdown__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Dropdown */ "./src/Dropdown.jsx");
+
+
+
+
+
+
+
+function SidebarSettings() {
+  const {
+    attributes: {
+      isLabelFixed,
+      labelAlignX,
+      labelAlignY,
+      corners
+    },
+    parentState: {
+      showContent
+    },
+    setParentState,
+    handleAttributeChange,
+    updateCorner
+  } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useContext)(_AttributesContext__WEBPACK_IMPORTED_MODULE_3__["default"]);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+    key: "section"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Panel, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+    title: "Content",
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, __("Source Page")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+    onChange: handleAttributeChange("source"),
+    placeholder: __("https://example.com/about")
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+    onChange: () => setParentState("showContent")(!showContent.value),
+    label: __("Show content?"),
+    checked: showContent.value
+  }))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Panel, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+    title: "Corners",
+    initialOpen: false
+  }, ["top", "right", "bottom", "left"].map(position => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, __((0,change_case__WEBPACK_IMPORTED_MODULE_5__.capitalCase)(position))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, __("X")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Number, {
+      onChange: x => updateCorner(position)([x, 0]),
+      value: corners[position][0]
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, __("Y")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Number, {
+      onChange: y => updateCorner(position)([0, y]),
+      value: corners[position][1]
+    })));
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Panel, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+    title: "Label",
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TabPanel, {
+    tabs: [{
+      name: "normal",
+      title: __("Normal")
+    }, {
+      name: "hover",
+      title: __("Hover")
+    }]
+  }, tab => {
+    if (tab.name == "normal") return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+      checked: attributes.isLabelFixed,
+      onChange: () => handleAttributeChange("isLabelFixed"),
+      label: __("Fix Label?")
+    }))), isLabelFixed && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, __("Vertical Align")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Dropdown__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      options: [{
+        value: "top",
+        title: __("Top")
+      }, {
+        value: "center",
+        title: __("Center")
+      }, {
+        value: "bottom",
+        title: __("Bottom")
+      }],
+      value: labelAlignY,
+      onChange: handleAttributeChange("labelAlignY")
+    }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, __("Horizontal Align")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Dropdown__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      options: [{
+        value: "left",
+        title: __("Left")
+      }, {
+        value: "center",
+        title: __("Center")
+      }, {
+        value: "Right",
+        title: __("Right")
+      }],
+      value: labelAlignX,
+      onChange: handleAttributeChange("labelAlignX")
+    })))));else if (tab.name == "hover") return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, "Animation related controls")));
+  }))));
+}
+
+/***/ }),
+
 /***/ "./src/edit.js":
 /*!*********************!*\
   !*** ./src/edit.js ***!
@@ -18,12 +379,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var react_draggable__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-draggable */ "./node_modules/react-draggable/build/cjs/cjs.js");
-/* harmony import */ var react_draggable__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_draggable__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var change_case__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! change-case */ "./node_modules/capital-case/dist.es2015/index.js");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
+/* harmony import */ var _AttributesContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AttributesContext */ "./src/AttributesContext.jsx");
+/* harmony import */ var _MorphableRect__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./MorphableRect */ "./src/MorphableRect.jsx");
+/* harmony import */ var _SidebarSettings__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./SidebarSettings */ "./src/SidebarSettings.jsx");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
 
 
 
@@ -32,352 +391,55 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const AttributesContext = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createContext)();
 function Edit(_ref) {
-  var _style$color$backgrou;
-
   let {
     attributes,
     setAttributes,
     isSelected
   } = _ref;
 
-  // Utility function to handle attribute change
-  const handleAttributeChange = attribute => newValue => setAttributes({
-    [attribute]: newValue
-  });
-
-  const parentDimensions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)([window.innerWidth, window.innerHeight]); // For now; need to get the parent's dimensions
-
-  /* Elements */
-
-  const backgroundElement = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  const contentElement = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null); // Utility function to change the array output of useState to an object
-
-  const generateStateObject = state => {
-    return {
-      value: state[0],
-      handler: state[1]
-    };
-  };
-  /* STATE DECLARATION */
-
-
-  const state = {
-    showContent: generateStateObject((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false))
-  };
-
-  const setState = key => state[key].handler; // Attributes
-
-
-  const {
-    corners,
-    style,
-    backgroundColor,
-    isLabelFixed,
-    labelAlignX,
-    labelAlignY,
-    labelPos
-  } = attributes;
-
-  const updateCorner = type => function () {
-    let offsets = [0, 0];
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    let data = args.pop();
-
-    switch (type) {
-      case "top":
-        offsets = [0, 0];
-        break;
-
-      case "right":
-        offsets = [width, 0];
-        break;
-
-      case "bottom":
-        offsets = [width, height];
-        break;
-
-      case "left":
-        offsets = [0, height];
-        break;
-    }
-
-    const newCornerData = [Math.round(100 * (data.x + offsets[0]) / window.innerWidth), Math.round(100 * (data.y + offsets[1]) / window.innerHeight)];
-    handleAttributeChange("corners")({ ...corners,
-      [type]: newCornerData
+  function updateAttribute(attribute) {
+    return newValue => setAttributes({
+      [attribute]: newValue
     });
-  };
+  }
 
-  const getClipPathValue = () => {
-    const {
-      top,
-      right,
-      bottom,
-      left
-    } = corners;
-    return `polygon(${top[0]}% ${top[1]}%, ${right[0]}% ${right[1]}%, ${bottom[0]}% ${bottom[1]}%, ${left[0]}% ${left[1]}%)`;
-  };
+  const [parentDimensions, setParentDimensions] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
+  const parentDimensionsRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const updatingFirstTime = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(true);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (updatingFirstTime?.current) {
+      updatingFirstTime.current = false;
+      let parent = parentDimensionsRef.current.closest(".jumbotron__sections-wrapper");
 
-  const getLabelDefaultPosition = () => {
-    const {
-      height,
-      width
-    } = parentDimensions.current;
-    let result = {
-      x: 0,
-      y: 0
-    };
-
-    if (isLabelFixed) {
-      switch (labelAlignX) {
-        case "left":
-          result.x = 0;
-          break;
-
-        case "center":
-          result.x = 0.5 * width;
-          break;
-
-        case "right":
-          result.x = width;
-          break;
+      function updateParentDimensions() {
+        setParentDimensions({
+          width: parent.clientWidth,
+          height: parent.clientHeight
+        });
       }
 
-      switch (labelAlignY) {
-        case "top":
-          result.y = 0;
-          break;
-
-        case "center":
-          result.y = 0.5 * height;
-          break;
-
-        case "bottom":
-          result.y = height;
-          break;
-      }
-    } else {
-      result.x = labelPos[0];
-      result.y = labelPos[1];
+      new ResizeObserver(updateParentDimensions).observe(parent);
+      updateParentDimensions();
     }
-
-    return result;
-  }; // CSS variables
-
-
-  const backgroundCssVars = {
-    "--background-clip-path": getClipPathValue(),
-    "--background": (_style$color$backgrou = style?.color.background) !== null && _style$color$backgrou !== void 0 ? _style$color$backgrou : `var(--wp--preset--color--${backgroundColor})`
-  };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(AttributesContext.Provider, {
+  }, [parentDimensions]);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AttributesContext__WEBPACK_IMPORTED_MODULE_3__["default"].Provider, {
     value: {
       attributes,
       setAttributes,
+      updateAttribute,
       isSelected,
-      handleAttributeChange,
-      parentDimensions: parentDimensions.current,
-      updateCorner,
-      parentState: state,
-      setParentState: setState
+      parentDimensions
     }
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "section__background",
-    style: backgroundCssVars,
-    ref: backgroundElement
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "section__content-wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Label, {
-    defaultPosition: getLabelDefaultPosition()
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "section__content",
-    useRef: contentElement
-  })), isSelected && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Points, null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SidebarSettings, null)));
-}
-
-function Label(_ref2) {
-  let {
-    defaultPosition
-  } = _ref2;
-  const {
-    attributes: {
-      label,
-      isLabelFixed
-    },
-    handleAttributeChange,
-    isSelected
-  } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useContext)(AttributesContext); // Handle label on drag
-
-  const handlePosChange = (e, data) => {
-    if (isLabelFixed) {
-      e.preventDefault();
-      return;
-    }
-
-    const x = data.x;
-    const y = data.y;
-    handleAttributeChange("labelPos")([x, y]);
-  };
-
-  const richText = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.RichText, {
-    tagName: "h2",
-    value: label,
-    allowedFormats: ["core/bold", "core/italic", "core/strikethrough"],
-    onChange: handleAttributeChange("label"),
-    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Label"),
-    className: "section__label"
-  }); // Let the label be draggable only when the user is editing the Section
-
-  return isSelected ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)((react_draggable__WEBPACK_IMPORTED_MODULE_4___default()), {
-    onDrag: handlePosChange,
-    defaultPosition: defaultPosition
-  }, richText) : richText;
-}
-
-function Points() {
-  const {
-    updateCorner
-  } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useContext)(AttributesContext);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, ["top", "right", "bottom", "left"].map((val, index) => {
-    {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Point, {
-        position: val,
-        onDrag: updateCorner("val"),
-        key: `${index}-${val}`
-      });
-    }
-  }));
-}
-
-function Point(_ref3) {
-  let {
-    position,
-    onDrag
-  } = _ref3;
-  const {
-    attributes: {
-      corners: {
-        [position]: [x, y]
-      }
-    }
-  } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useContext)(AttributesContext);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)((react_draggable__WEBPACK_IMPORTED_MODULE_4___default()), {
-    defaultPosition: {
-      x,
-      y
-    },
-    onDrag: onDrag
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: `section__point--${position}`
-  }));
-}
-
-function SidebarSettings() {
-  const {
-    attributes: {
-      isLabelFixed,
-      labelAlignX,
-      labelAlignY,
-      corners
-    },
-    parentState: {
-      showContent
-    },
-    setParentState,
-    handleAttributeChange,
-    updateCorner
-  } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useContext)(AttributesContext);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
-    key: "section"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Panel, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-    title: "Content",
-    initialOpen: false
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Source Page")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-    onChange: handleAttributeChange("source"),
-    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("https://example.com/about")
-  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-    onChange: () => setParentState("showContent")(!showContent.value),
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Show content?"),
-    checked: showContent.value
-  }))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Panel, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-    title: "Corners",
-    initialOpen: false
-  }, ["top", "right", "bottom", "left"].map(position => {
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)((0,change_case__WEBPACK_IMPORTED_MODULE_6__.capitalCase)(position))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("X")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Number, {
-      onChange: x => updateCorner(position)([x, 0]),
-      value: corners[position][0]
-    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Y")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Number, {
-      onChange: y => updateCorner(position)([0, y]),
-      value: corners[position][1]
-    })));
-  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Panel, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
-    title: "Label",
-    initialOpen: false
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TabPanel, {
-    tabs: [{
-      name: "normal",
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Normal")
-    }, {
-      name: "hover",
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Hover")
-    }]
-  }, tab => {
-    if (tab.name == "normal") return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
-      checked: attributes.isLabelFixed,
-      onChange: () => handleAttributeChange("isLabelFixed"),
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Fix Label?")
-    }))), isLabelFixed && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Vertical Align")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Dropdown, {
-      options: [{
-        value: "top",
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Top")
-      }, {
-        value: "center",
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Center")
-      }, {
-        value: "bottom",
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Bottom")
-      }],
-      value: labelAlignY,
-      onChange: handleAttributeChange("labelAlignY")
-    }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Horizontal Align")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Dropdown, {
-      options: [{
-        value: "left",
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Left")
-      }, {
-        value: "center",
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Center")
-      }, {
-        value: "Right",
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Right")
-      }],
-      value: labelAlignX,
-      onChange: handleAttributeChange("labelAlignX")
-    })))));else if (tab.name == "hover") return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, "Animation related controls")));
-  }))));
-}
-/**
- * Render a Dropdown menu with the given options
- * @param {Object} props Properties
- * @returns A JSX Dropdown menu
- */
-
-
-function Dropdown(_ref4) {
-  let {
-    options,
-    value,
-    onChange
-  } = _ref4;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
-    onChange: e => onChange(e.currentTarget.value)
-  }, options.map(option => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
-    value: option.value,
-    selected: option.value == value
-  }, option.title)));
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
+    className: "section__container"
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_MorphableRect__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    parentDimensions: parentDimensions,
+    ref: parentDimensionsRef
+  })));
 }
 
 /***/ }),
@@ -3989,7 +4051,7 @@ module.exports = window["wp"]["i18n"];
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"blaze/section","version":"0.1.0","title":"Section","category":"widgets","icon":"heart","description":"A fixed positioned section","supports":{"html":false,"color":{"background":true,"text":false,"gradients":false,"link":false}},"attributes":{"source":{"type":"string","default":""},"corners":{"type":"object","default":{"top":[0,0],"right":[100,0],"bottom":[100,100],"left":[0,100]}},"label":{"type":"string","default":""},"isLabelFixed":{"type":"boolean","default":true},"labelAlignX":{"type":"string","default":"center"},"labelAlignY":{"type":"string","default":"center"},"labelPos":{"type":"array","default":[0,0]},"style":{"type":"object","default":{"color":{"background":"tomato"}}}},"parent":["blaze/jumbotron"],"textdomain":"section","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css"}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"blaze/section","version":"0.1.0","title":"Section","category":"widgets","icon":"heart","description":"A fixed positioned section","supports":{"html":false,"color":{"background":true,"text":false,"gradients":false,"link":false}},"attributes":{"source":{"type":"string","default":""},"corners":{"type":"object","default":{"top":[0,0],"right":[50,0],"bottom":[50,100],"left":[0,100]}},"label":{"type":"string","default":""},"isLabelFixed":{"type":"boolean","default":true},"labelPos":{"type":"array","default":[0,0]},"style":{"type":"object","default":{"color":{"background":"tomato"}}}},"parent":["blaze/jumbotron"],"textdomain":"section","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css"}');
 
 /***/ })
 

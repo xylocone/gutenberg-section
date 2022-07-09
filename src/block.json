@@ -25,8 +25,8 @@
 			"type": "object",
 			"default": {
 				"top": [0, 0],
-				"right": [100, 0],
-				"bottom": [100, 100],
+				"right": [50, 0],
+				"bottom": [50, 100],
 				"left": [0, 100]
 			}
 		},
@@ -37,14 +37,6 @@
 		"isLabelFixed": {
 			"type": "boolean",
 			"default": true
-		},
-		"labelAlignX": {
-			"type": "string",
-			"default": "center"
-		},
-		"labelAlignY": {
-			"type": "string",
-			"default": "center"
 		},
 		"labelPos": {
 			"type": "array",

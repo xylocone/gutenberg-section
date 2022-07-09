@@ -3,11 +3,11 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	z-index: 0;
+	z-index: 100;
 
 	// Display and Box Model
-	height: 100vh;
-	width: 100%;
+	height: var(--parent-height);
+	width: var(--parent-width);
 
 	// Others
 	clip-path: var(--background-clip-path);
@@ -19,26 +19,36 @@
 	}
 }
 
-.section__content-wrapper {
-	.section__label {
-		// Positioning
-		position: absolute;
-		top: 0;
-		left: 0;
+.section__label {
+	// Positioning
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 0;
 
-		// Others
-		transform-origin: center;
+	// Others
+	transform-origin: center;
+	transition: 0.5s ease all;
+
+	&.revealed {
+		transform: none;
 	}
+}
 
-	.section__content {
-		// Others
-		transform: translateX(-100vw);
-		opacity: 0;
-		transition: 0.5s ease all;
+.section__content {
+	// Positioning
+	position: absolute;
+	top: 10%;
+	left: 0;
+	z-index: 0;
 
-		&.revealed {
-			transform: none;
-			opacity: 1;
-		}
+	// Others
+	transform: translateX(-100vw);
+	opacity: 0;
+	transition: 0.5s ease all;
+
+	&.revealed {
+		transform: none;
+		opacity: 1;
 	}
 }
