@@ -46,16 +46,16 @@
       "type": "string",
       "default": ""
     },
-    "isLabelFixed": {
-      "type": "boolean",
-      "default": true
-    },
     "labelPos": {
       "type": "array",
       "default": [
         0,
         0
       ]
+    },
+    "labelRot": {
+      "type": "number",
+      "default": 0
     },
     "style": {
       "type": "object",

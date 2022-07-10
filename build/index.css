@@ -12,19 +12,28 @@
 
 /*=====  End of Settings Sidebar styles  ======*/
 .section__container.is-selected .section__background {
-  filter: drop-shadow(10px 2px 2px rgb(41, 11, 11));
+  z-index: 200;
+}
+.section__container.is-selected .section__content {
+  z-index: 201;
+}
+.section__container.is-selected .section__label {
+  z-index: 202;
+}
+.section__container.is-selected .section__point-wrapper {
+  z-index: 203;
 }
 .section__container.is-selected::after {
   box-shadow: none !important;
 }
 
-.section__point-wrapper {
+.section__container .section__point-wrapper {
   position: absolute;
   top: 0;
   left: 0;
   display: inline-block;
 }
-.section__point-wrapper .section__point {
+.section__container .section__point-wrapper .section__point {
   display: inline-block;
   height: 16px;
   width: 16px;

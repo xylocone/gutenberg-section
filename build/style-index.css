@@ -1,7 +1,7 @@
 /*!***************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/style.scss ***!
   \***************************************************************************************************************************************************************************************************************************************/
-.section__background {
+.section__container .section__background {
   position: absolute;
   top: 0;
   left: 0;
@@ -13,33 +13,46 @@
   background-color: var(--background);
   transition: 0.5s ease clip-path;
 }
-.section__background.revealed {
-  -webkit-clip-path: none;
-          clip-path: none;
-}
-
-.section__label {
+.section__container .section__label {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 0;
+  padding: 16px;
   transform-origin: center;
   transition: 0.5s ease all;
 }
-.section__label.revealed {
-  transform: none;
-}
-
-.section__content {
+.section__container .section__content {
   position: absolute;
   top: 10%;
   left: 0;
   z-index: 0;
+  height: calc(0.8 * var(--parent-height));
+  padding: 16px;
+  overflow: auto;
   transform: translateX(-100vw);
   opacity: 0;
   transition: 0.5s ease all;
+  scrollbar-width: 0;
+  -ms-overflow-style: none;
 }
-.section__content.revealed {
+.section__container .section__content::-webkit-scrollbar {
+  display: none;
+}
+
+.section__container.is-opened .section__background {
+  z-index: 200;
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+          clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.section__container.is-opened .section__label {
+  z-index: 201;
+  transform: none;
+}
+.section__container.is-opened .section__content {
+  z-index: 202;
+}
+.section__container.is-opened .section__content.content-fetched {
   transform: none;
   opacity: 1;
 }

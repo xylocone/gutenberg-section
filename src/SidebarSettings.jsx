@@ -1,3 +1,4 @@
+import { __ } from "@wordpress/i18n";
 import { InspectorControls } from "@wordpress/block-editor";
 import {
 	Panel,
@@ -6,66 +7,72 @@ import {
 	TabPanel,
 	ToggleControl,
 	TextControl,
+	AnglePickerControl,
 } from "@wordpress/components";
 import { capitalCase } from "change-case";
 import { useContext } from "@wordpress/element";
 
 import AttributesContext from "./AttributesContext";
-import Dropdown from "./Dropdown";
 
 export default function SidebarSettings() {
-	const {
-		attributes: { isLabelFixed, labelAlignX, labelAlignY, corners },
-		parentState: { showContent },
-		setParentState,
-		handleAttributeChange,
-		updateCorner,
-	} = useContext(AttributesContext);
+	const { attributes, updateAttribute, isOpened, setIsOpened, updateCorner } =
+		useContext(AttributesContext);
 
 	return (
 		<InspectorControls key="section">
 			<Panel>
-				<PanelBody title="Content" initialOpen={false}>
+				<PanelBody title={__("Content")} initialOpen={false}>
 					<PanelRow>
 						<fieldset>
 							<legend>{__("Source Page")}</legend>
 							<TextControl
-								onChange={handleAttributeChange("source")}
+								onChange={updateAttribute("source")}
 								placeholder={__("https://example.com/about")}
+								value={attributes.source}
 							/>
 						</fieldset>
 					</PanelRow>
 					<PanelRow>
 						<fieldset>
 							<ToggleControl
-								onChange={() =>
-									setParentState("showContent")(!showContent.value)
-								}
+								onChange={() => setIsOpened(!isOpened)}
 								label={__("Show content?")}
-								checked={showContent.value}
+								checked={isOpened}
 							/>
 						</fieldset>
 					</PanelRow>
 				</PanelBody>
 			</Panel>
 			<Panel>
-				<PanelBody title="Corners" initialOpen={false}>
-					{["top", "right", "bottom", "left"].map((position) => {
+				<PanelBody title={__("Corners")} initialOpen={false}>
+					{Object.keys(attributes.corners).map((position) => {
 						return (
 							<PanelRow>
 								<label>{__(capitalCase(position))}</label>
 								<fieldset>
 									<legend>{__("X")}</legend>
 									<Number
-										onChange={(x) => updateCorner(position)([x, 0])}
-										value={corners[position][0]}
+										onChange={(x) =>
+											updateCorner(
+												position,
+												x,
+												attributes.corners[position][1] // existing y
+											)
+										}
+										value={attributes.corners[position][0]}
 									/>
 								</fieldset>
 								<fieldset>
 									<legend>{__("Y")}</legend>
 									<Number
-										onChange={(y) => updateCorner(position)([0, y])}
-										value={corners[position][1]}
+										onChange={(y) =>
+											updateCorner(
+												position,
+												attributes.corners[position][0], // existing x
+												y
+											)
+										}
+										value={attributes.corners[position][1]}
 									/>
 								</fieldset>
 							</PanelRow>
@@ -74,7 +81,7 @@ export default function SidebarSettings() {
 				</PanelBody>
 			</Panel>
 			<Panel>
-				<PanelBody title="Label" initialOpen={false}>
+				<PanelBody title={__("Label")} initialOpen={false}>
 					<TabPanel
 						tabs={[
 							{
@@ -93,63 +100,13 @@ export default function SidebarSettings() {
 									<>
 										<PanelRow>
 											<fieldset>
-												<ToggleControl
-													checked={attributes.isLabelFixed}
-													onChange={() => handleAttributeChange("isLabelFixed")}
-													label={__("Fix Label?")}
+												<legend>{__("Rotation")}</legend>
+												<AnglePickerControl
+													value={attributes.labelRot}
+													onChange={updateAttribute("labelRot")}
 												/>
 											</fieldset>
 										</PanelRow>
-										{isLabelFixed && (
-											<>
-												<PanelRow>
-													<fieldset>
-														<legend>{__("Vertical Align")}</legend>
-														<Dropdown
-															options={[
-																{
-																	value: "top",
-																	title: __("Top"),
-																},
-																{
-																	value: "center",
-																	title: __("Center"),
-																},
-																{
-																	value: "bottom",
-																	title: __("Bottom"),
-																},
-															]}
-															value={labelAlignY}
-															onChange={handleAttributeChange("labelAlignY")}
-														/>
-													</fieldset>
-												</PanelRow>
-												<PanelRow>
-													<fieldset>
-														<legend>{__("Horizontal Align")}</legend>
-														<Dropdown
-															options={[
-																{
-																	value: "left",
-																	title: __("Left"),
-																},
-																{
-																	value: "center",
-																	title: __("Center"),
-																},
-																{
-																	value: "Right",
-																	title: __("Right"),
-																},
-															]}
-															value={labelAlignX}
-															onChange={handleAttributeChange("labelAlignX")}
-														/>
-													</fieldset>
-												</PanelRow>
-											</>
-										)}
 									</>
 								);
 							else if (tab.name == "hover")

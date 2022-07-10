@@ -1,54 +1,80 @@
-.section__background {
-	// Positioning
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 100;
+.section__container {
+	.section__background {
+		// Positioning
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 100;
 
-	// Display and Box Model
-	height: var(--parent-height);
-	width: var(--parent-width);
+		// Display and Box Model
+		height: var(--parent-height);
+		width: var(--parent-width);
 
-	// Others
-	clip-path: var(--background-clip-path);
-	background-color: var(--background);
-	transition: 0.5s ease clip-path;
+		// Others
+		clip-path: var(--background-clip-path);
+		background-color: var(--background);
+		transition: 0.5s ease clip-path;
+	}
 
-	&.revealed {
-		clip-path: none;
+	.section__label {
+		// Positioning
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 0;
+
+		// Display and Box Model
+		padding: 16px;
+
+		// Others
+		transform-origin: center;
+		transition: 0.5s ease all;
+	}
+
+	.section__content {
+		// Positioning
+		position: absolute;
+		top: 10%;
+		left: 0;
+		z-index: 0;
+
+		// Display and Box Model
+		height: calc(0.8 * var(--parent-height));
+		padding: 16px;
+
+		// Others
+		overflow: auto;
+
+		transform: translateX(-100vw);
+		opacity: 0;
+		transition: 0.5s ease all;
+
+		// Hide scrollbar
+		scrollbar-width: 0;
+		-ms-overflow-style: none;
+		&::-webkit-scrollbar {
+			display: none;
+		}
 	}
 }
 
-.section__label {
-	// Positioning
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 0;
+.section__container.is-opened {
+	.section__background {
+		z-index: 200;
+		clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+	}
 
-	// Others
-	transform-origin: center;
-	transition: 0.5s ease all;
-
-	&.revealed {
+	.section__label {
+		z-index: 201;
 		transform: none;
 	}
-}
 
-.section__content {
-	// Positioning
-	position: absolute;
-	top: 10%;
-	left: 0;
-	z-index: 0;
+	.section__content {
+		z-index: 202;
 
-	// Others
-	transform: translateX(-100vw);
-	opacity: 0;
-	transition: 0.5s ease all;
-
-	&.revealed {
-		transform: none;
-		opacity: 1;
+		&.content-fetched {
+			transform: none;
+			opacity: 1;
+		}
 	}
 }

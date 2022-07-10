@@ -1,23 +1,16 @@
-import { useRef } from "@wordpress/element";
-
 import { DraggableCore } from "react-draggable";
 
-export default function Points({
-	positions,
-	defaultPositions,
-	onDrag,
-	onStop,
-}) {
+export default function Points({ positions, cornerTypes, onDrag, onStop }) {
 	return (
 		<>
-			{positions.map((pos, index) => {
+			{cornerTypes.map((pos, index) => {
 				{
 					return (
 						<Point
 							onDrag={(x, y) => onDrag(pos, x, y)}
 							onStop={(x, y) => onStop(pos, x, y)}
 							key={index}
-							defaultPosition={defaultPositions[pos]}
+							position={positions[pos]}
 						/>
 					);
 				}
@@ -26,9 +19,8 @@ export default function Points({
 	);
 }
 
-function Point({ defaultPosition, onDrag, onStop }) {
+function Point({ position, onDrag, onStop }) {
 	const MOVEMENT_THRESHOLD = 0.1;
-	const pointRef = useRef(null);
 
 	return (
 		<DraggableCore
@@ -40,7 +32,7 @@ function Point({ defaultPosition, onDrag, onStop }) {
 			<span
 				className="section__point-wrapper"
 				style={{
-					transform: `translate(${defaultPosition.x}px, ${defaultPosition.y}px)`,
+					transform: `translate(${position.x}px, ${position.y}px)`,
 					transition: "transform 0.1s linear",
 				}}
 			>
@@ -51,7 +43,6 @@ function Point({ defaultPosition, onDrag, onStop }) {
 
 	function handleDrag(x, y, deltaX, deltaY, callback) {
 		if (deltaX * deltaY > MOVEMENT_THRESHOLD) {
-			pointRef.current.style.transform = `translate(${x}px, ${y}px)`;
 			callback(x, y);
 		}
 	}

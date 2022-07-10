@@ -1,22 +1,20 @@
-import { useContext, forwardRef } from "@wordpress/element";
+import { useContext } from "@wordpress/element";
 
 import AttributesContext from "./AttributesContext";
 import Points from "./Points";
 
-const MorphableRect = forwardRef((props, ref) => {
-	const { attributes, updateAttribute, parentDimensions, isSelected } =
+function MorphableRect({ children }) {
+	const { attributes, updateCorner, parentDimensions, isSelected, isOpened } =
 		useContext(AttributesContext);
 
 	return (
 		<>
-			<div className="section__background" ref={ref} style={getCSSvars()}></div>
-			{props.children}
-			<div className="section__content"></div>
-
-			{isSelected && (
+			<div className="section__background" style={getCSSvars()}></div>
+			{children}
+			{isSelected && !isOpened && (
 				<Points
-					defaultPositions={getPointsDefaultPositions()}
-					positions={Object.keys(attributes.corners)}
+					positions={getPointsPositions()}
+					cornerTypes={Object.keys(attributes.corners)}
 					onDrag={updateCorner}
 					onStop={preventExitingView}
 				/>
@@ -24,19 +22,19 @@ const MorphableRect = forwardRef((props, ref) => {
 		</>
 	);
 
-	function getPointsDefaultPositions() {
+	function getPointsPositions() {
 		const { corners } = attributes;
-		const { width, height } = props.parentDimensions;
+		const { width, height } = parentDimensions;
 
-		let defaultPositions = {};
+		let positions = {};
 
 		for (const cornerType in corners) {
-			defaultPositions[cornerType] = { x: 0, y: 0 };
-			defaultPositions[cornerType].x = (corners[cornerType][0] * width) / 100;
-			defaultPositions[cornerType].y = (corners[cornerType][1] * height) / 100;
+			positions[cornerType] = { x: 0, y: 0 };
+			positions[cornerType].x = (corners[cornerType][0] * width) / 100;
+			positions[cornerType].y = (corners[cornerType][1] * height) / 100;
 		}
 
-		return defaultPositions;
+		return positions;
 	}
 
 	function getClipPathValue() {
@@ -55,15 +53,6 @@ const MorphableRect = forwardRef((props, ref) => {
 		};
 	}
 
-	function updateCorner(cornerType, x, y) {
-		const { width, height } = parentDimensions;
-
-		updateAttribute("corners")({
-			...attributes.corners,
-			[cornerType]: [(100 * x) / width, (100 * y) / height], // save as percentages
-		});
-	}
-
 	function preventExitingView(cornerType, x, y) {
 		const { width, height } = parentDimensions;
 
@@ -75,6 +64,6 @@ const MorphableRect = forwardRef((props, ref) => {
 
 		updateCorner(cornerType, x, y);
 	}
-});
+}
 
 export default MorphableRect;
