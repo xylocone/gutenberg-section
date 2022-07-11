@@ -42,6 +42,10 @@
 			"type": "number",
 			"default": 0
 		},
+		"isLabelHovered": {
+			"type": "boolean",
+			"default": false
+		},
 		"style": {
 			"type": "object",
 			"default": {

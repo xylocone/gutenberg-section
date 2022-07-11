@@ -11,22 +11,6 @@
 }
 
 /*=====  End of Settings Sidebar styles  ======*/
-.section__container.is-selected .section__background {
-  z-index: 200;
-}
-.section__container.is-selected .section__content {
-  z-index: 201;
-}
-.section__container.is-selected .section__label {
-  z-index: 202;
-}
-.section__container.is-selected .section__point-wrapper {
-  z-index: 203;
-}
-.section__container.is-selected::after {
-  box-shadow: none !important;
-}
-
 .section__container .section__point-wrapper {
   position: absolute;
   top: 0;
@@ -43,6 +27,50 @@
   border-radius: 50%;
   box-shadow: 0 0 2px lightslategray;
   transform: translate(-50%, -50%);
+}
+.section__container .section__label {
+  /**
+   *
+   * Hierarchy of the <Label /> component is as follows:
+   * 
+   *	.section__label			<!-- translation is applied to this -->
+   *		.label__wrapper		<!-- rotation is applied to this -->
+   *			.label__handle   <!-- editor only -->
+   *			.label__container
+   *				.label__text
+   *				.label__clones-container
+   *					.label__clone * 4
+   *
+   *
+   */
+}
+.section__container .section__label .label__handle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 10px;
+  width: 10px;
+  cursor: move;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 50%;
+  transform: translate(-50%, calc(-50% - 8px));
+}
+
+.section__container.is-selected .section__background {
+  z-index: 200;
+}
+.section__container.is-selected .section__content {
+  z-index: 201;
+}
+.section__container.is-selected .section__label {
+  z-index: 202;
+}
+.section__container.is-selected .section__point-wrapper {
+  z-index: 203;
+}
+.section__container.is-selected::after {
+  box-shadow: none !important;
 }
 
 /*# sourceMappingURL=index.css.map*/

@@ -15,8 +15,15 @@ import { useContext } from "@wordpress/element";
 import AttributesContext from "./AttributesContext";
 
 export default function SidebarSettings() {
-	const { attributes, updateAttribute, isOpened, setIsOpened, updateCorner } =
-		useContext(AttributesContext);
+	const {
+		attributes,
+		updateAttribute,
+		isOpened,
+		setIsOpened,
+		isLabelHovered,
+		setIsLabelHovered,
+		updateCorner,
+	} = useContext(AttributesContext);
 
 	return (
 		<InspectorControls key="section">
@@ -112,6 +119,15 @@ export default function SidebarSettings() {
 							else if (tab.name == "hover")
 								return (
 									<>
+										<PanelRow>
+											<fieldset>
+												<ToggleControl
+													onChange={() => setIsLabelHovered(!isLabelHovered)}
+													label={__("Hover Label?")}
+													checked={isLabelHovered}
+												/>
+											</fieldset>
+										</PanelRow>
 										<PanelRow>
 											<h2>Animation related controls</h2>
 										</PanelRow>

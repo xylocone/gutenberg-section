@@ -1,59 +1,69 @@
 import { __ } from "@wordpress/i18n";
 import { useContext } from "@wordpress/element";
 import { RichText } from "@wordpress/block-editor";
-import { DraggableCore } from "react-draggable";
+import Draggable from "react-draggable";
 
 // Internal dependencies
 import AttributesContext from "./AttributesContext";
 
 export default function Label() {
-	const MOVEMENT_THRESHOLD = 0.1;
 	const {
 		attributes,
 		updateAttribute,
 		isSelected,
 		parentDimensions,
 		isOpened,
+		isLabelHovered,
 	} = useContext(AttributesContext);
 
 	return (
-		<DraggableCore
-			onDrag={(e, { x, y, deltaX, deltaY }) =>
-				handleDrag(x, y, deltaX, deltaY, handlePosChange)
-			}
-			onStop={(e, { x, y, deltaX, deltaY }) =>
-				handleStop(x, y, deltaX, deltaY, handlePosChange)
-			}
+		<Draggable
+			onDrag={(e, { x, y }) => handlePosChange(x, y)}
+			handle={".label__handle"}
+			position={getLabelPosition()}
 		>
-			<div
-				className="section__label-wrapper"
-				style={{
-					transform: `translate(${
-						(attributes.labelPos[0] * parentDimensions.width) / 100
-					}px, ${(attributes.labelPos[1] * parentDimensions.height) / 100}px)`,
-				}}
-			>
-				<RichText
-					tagName="h2"
-					value={attributes.label}
-					allowedFormats={["core/bold", "core/italic", "core/strikethrough"]}
-					onChange={updateAttribute("label")}
-					placeholder={__("Label")}
-					className="section__label"
-					style={{ transform: `rotate(${attributes.labelRot}deg)` }}
-				/>
+			<div className="section__label" style={getCSSvariables()}>
+				<div className={`label__wrapper ${isLabelHovered ? "is-hovered" : ""}`}>
+					{isSelected && !isOpened && !isLabelHovered && (
+						<div className="label__handle"></div>
+					)}
+					<div className="label__container">
+						<RichText
+							tagName="h2"
+							value={attributes.label}
+							allowedFormats={[
+								"core/bold",
+								"core/italic",
+								"core/strikethrough",
+							]}
+							onChange={updateAttribute("label")}
+							placeholder={__("Label")}
+							className="label__text"
+							onMouseDown={(e) => {
+								if (e.currentTarget == document.activeElement)
+									e.stopPropagation(); // prevent dragging while typing
+							}}
+						/>
+						<div className="label__clones-container">
+							{[...Array(3)].map((_value, index) => (
+								<h2 className="label__clone" key={index}>
+									{attributes.label}
+								</h2>
+							))}
+						</div>
+					</div>
+				</div>
 			</div>
-		</DraggableCore>
+		</Draggable>
 	);
 
-	function handleDrag(x, y, deltaX, deltaY, callback) {
-		if (deltaX * deltaY > MOVEMENT_THRESHOLD) {
-			callback(x, y);
-		}
-	}
-
-	function handleStop(x, y, callback) {
-		callback(x, y);
+	function getLabelPosition() {
+		const [x, y] = attributes.labelPos;
+		const { width, height } = parentDimensions;
+		return {
+			x: (x / 100) * width,
+			y: (y / 100) * height,
+		};
 	}
 
 	function handlePosChange(x, y) {
@@ -63,6 +73,21 @@ export default function Label() {
 
 		const { width, height } = parentDimensions;
 
-		updateAttribute("labelPos")([(100 * x) / width, (100 * y) / height]);
+		let xPercent = (100 * x) / width;
+		let yPercent = (100 * y) / height;
+
+		if (xPercent <= 0) xPercent = 0;
+		else if (xPercent >= 100) xPercent = 100;
+
+		if (yPercent <= 0) yPercent = 0;
+		else if (yPercent >= 100) yPercent = 100;
+
+		updateAttribute("labelPos")([xPercent, yPercent]);
+	}
+
+	function getCSSvariables() {
+		return {
+			"--label-rotate": `rotate(${attributes.labelRot}deg)`,
+		};
 	}
 }

@@ -80,58 +80,60 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function Label() {
-  const MOVEMENT_THRESHOLD = 0.1;
   const {
     attributes,
     updateAttribute,
     isSelected,
     parentDimensions,
-    isOpened
+    isOpened,
+    isLabelHovered
   } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useContext)(_AttributesContext__WEBPACK_IMPORTED_MODULE_4__["default"]);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_draggable__WEBPACK_IMPORTED_MODULE_3__.DraggableCore, {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)((react_draggable__WEBPACK_IMPORTED_MODULE_3___default()), {
     onDrag: (e, _ref) => {
       let {
         x,
-        y,
-        deltaX,
-        deltaY
+        y
       } = _ref;
-      return handleDrag(x, y, deltaX, deltaY, handlePosChange);
+      return handlePosChange(x, y);
     },
-    onStop: (e, _ref2) => {
-      let {
-        x,
-        y,
-        deltaX,
-        deltaY
-      } = _ref2;
-      return handleStop(x, y, deltaX, deltaY, handlePosChange);
-    }
+    handle: ".label__handle",
+    position: getLabelPosition()
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "section__label-wrapper",
-    style: {
-      transform: `translate(${attributes.labelPos[0] * parentDimensions.width / 100}px, ${attributes.labelPos[1] * parentDimensions.height / 100}px)`
-    }
+    className: "section__label",
+    style: getCSSvariables()
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `label__wrapper ${isLabelHovered ? "is-hovered" : ""}`
+  }, isSelected && !isOpened && !isLabelHovered && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "label__handle"
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "label__container"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.RichText, {
     tagName: "h2",
     value: attributes.label,
     allowedFormats: ["core/bold", "core/italic", "core/strikethrough"],
     onChange: updateAttribute("label"),
     placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Label"),
-    className: "section__label",
-    style: {
-      transform: `rotate(${attributes.labelRot}deg)`
+    className: "label__text",
+    onMouseDown: e => {
+      if (e.currentTarget == document.activeElement) e.stopPropagation(); // prevent dragging while typing
     }
-  })));
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "label__clones-container"
+  }, [...Array(3)].map((_value, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "label__clone",
+    key: index
+  }, attributes.label)))))));
 
-  function handleDrag(x, y, deltaX, deltaY, callback) {
-    if (deltaX * deltaY > MOVEMENT_THRESHOLD) {
-      callback(x, y);
-    }
-  }
-
-  function handleStop(x, y, callback) {
-    callback(x, y);
+  function getLabelPosition() {
+    const [x, y] = attributes.labelPos;
+    const {
+      width,
+      height
+    } = parentDimensions;
+    return {
+      x: x / 100 * width,
+      y: y / 100 * height
+    };
   }
 
   function handlePosChange(x, y) {
@@ -143,7 +145,17 @@ function Label() {
       width,
       height
     } = parentDimensions;
-    updateAttribute("labelPos")([100 * x / width, 100 * y / height]);
+    let xPercent = 100 * x / width;
+    let yPercent = 100 * y / height;
+    if (xPercent <= 0) xPercent = 0;else if (xPercent >= 100) xPercent = 100;
+    if (yPercent <= 0) yPercent = 0;else if (yPercent >= 100) yPercent = 100;
+    updateAttribute("labelPos")([xPercent, yPercent]);
+  }
+
+  function getCSSvariables() {
+    return {
+      "--label-rotate": `rotate(${attributes.labelRot}deg)`
+    };
   }
 }
 
@@ -365,6 +377,8 @@ function SidebarSettings() {
     updateAttribute,
     isOpened,
     setIsOpened,
+    isLabelHovered,
+    setIsLabelHovered,
     updateCorner
   } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useContext)(_AttributesContext__WEBPACK_IMPORTED_MODULE_4__["default"]);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
@@ -408,7 +422,11 @@ function SidebarSettings() {
     if (tab.name == "normal") return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Rotation")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.AnglePickerControl, {
       value: attributes.labelRot,
       onChange: updateAttribute("labelRot")
-    }))));else if (tab.name == "hover") return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, "Animation related controls")));
+    }))));else if (tab.name == "hover") return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+      onChange: () => setIsLabelHovered(!isLabelHovered),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Hover Label?"),
+      checked: isLabelHovered
+    }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, "Animation related controls")));
   }))));
 }
 
@@ -462,7 +480,8 @@ function Edit(_ref) {
     width: window.innerWidth,
     height: window.innerHeight
   });
-  const [isOpened, setIsOpened] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false); // Update the parentDimensions state variable every time the parent's dimensions change
+  const [isOpened, setIsOpened] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [isLabelHovered, setIsLabelHovered] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false); // Update the parentDimensions state variable every time the parent's dimensions change
 
   const containerRef = (0,_useElementDidMount__WEBPACK_IMPORTED_MODULE_8__["default"])(node => {
     let parent = node.closest(".jumbotron__sections-wrapper");
@@ -495,6 +514,8 @@ function Edit(_ref) {
       updateAttribute,
       isSelected,
       isOpened,
+      isLabelHovered,
+      setIsLabelHovered,
       setIsOpened,
       parentDimensions,
       updateCorner
@@ -4178,7 +4199,7 @@ module.exports = window["wp"]["i18n"];
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"blaze/section","version":"0.1.0","title":"Section","category":"widgets","icon":"heart","description":"A fixed positioned section","supports":{"html":false,"color":{"background":true,"text":false,"gradients":false,"link":false}},"attributes":{"source":{"type":"string","default":""},"corners":{"type":"object","default":{"top":[0,0],"right":[50,0],"bottom":[50,100],"left":[0,100]}},"label":{"type":"string","default":""},"labelPos":{"type":"array","default":[0,0]},"labelRot":{"type":"number","default":0},"style":{"type":"object","default":{"color":{"background":"tomato"}}}},"parent":["blaze/jumbotron"],"textdomain":"section","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css"}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"blaze/section","version":"0.1.0","title":"Section","category":"widgets","icon":"heart","description":"A fixed positioned section","supports":{"html":false,"color":{"background":true,"text":false,"gradients":false,"link":false}},"attributes":{"source":{"type":"string","default":""},"corners":{"type":"object","default":{"top":[0,0],"right":[50,0],"bottom":[50,100],"left":[0,100]}},"label":{"type":"string","default":""},"labelPos":{"type":"array","default":[0,0]},"labelRot":{"type":"number","default":0},"isLabelHovered":{"type":"boolean","default":false},"style":{"type":"object","default":{"color":{"background":"tomato"}}}},"parent":["blaze/jumbotron"],"textdomain":"section","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css"}');
 
 /***/ })
 

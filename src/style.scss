@@ -1,10 +1,23 @@
+// Utility exponentiation function
+@function pow($number, $exponent) {
+	$value: 1;
+
+	@if $exponent > 0 {
+		@for $i from 1 through $exponent {
+			$value: $value * $number;
+		}
+	}
+
+	@return $value;
+}
+
 .section__container {
 	.section__background {
 		// Positioning
 		position: absolute;
 		top: 0;
 		left: 0;
-		z-index: 100;
+		z-index: 0;
 
 		// Display and Box Model
 		height: var(--parent-height);
@@ -17,18 +30,110 @@
 	}
 
 	.section__label {
+		/**
+		 *
+		 * Hierarchy of the <Label /> component is as follows:
+		 * 
+		 *	.section__label			<!-- translation is applied to this -->
+		 *		.label__wrapper		<!-- rotation is applied to this -->
+		 *			.label__handle   <!-- editor only -->
+		 *			.label__container
+		 *				.label__text
+		 *				.label__clones-container
+		 *					.label__clone * 4
+		 *
+		 *
+		 */
+
 		// Positioning
 		position: absolute;
 		top: 0;
 		left: 0;
-		z-index: 0;
-
-		// Display and Box Model
-		padding: 16px;
+		z-index: 100;
 
 		// Others
-		transform-origin: center;
-		transition: 0.5s ease all;
+		transition: 0.5s ease transform;
+		transform: var(--label-translate);
+
+		--label-font-family: "Comfortaa", sans-serif;
+		--label-font-size: 64px;
+		--label-color: #16d97e;
+
+		.label__wrapper {
+			// Others
+			transform: var(--label-rotate);
+			transition: 0.5s ease transform;
+
+			&.is-hovered {
+				.label__container .label__clones-container {
+					z-index: 1;
+				}
+
+				@for $i from 1 through 4 {
+					.label__container
+						.label__clones-container
+						.label__clone:nth-of-type(#{$i}) {
+						transform: translateY((pow((0.6 * $i), 2) * 80%));
+						opacity: 1 - $i * 0.3;
+					}
+				}
+			}
+
+			.label__container {
+				// Positioning
+				position: relative;
+
+				.label__text {
+					// Display and Box Model
+					margin: 0;
+
+					// Others
+					font-family: var(--label-font-family);
+					font-size: var(--label-font-size);
+					color: var(--label-color);
+					font-weight: bold;
+				}
+
+				.label__clones-container {
+					// Positioning
+					position: absolute;
+					top: 0;
+					left: 0;
+					z-index: -1;
+
+					// Display and Box Model
+					height: 100%;
+					width: 100%;
+
+					.label__clone {
+						// Positioning
+						position: absolute;
+						top: 0;
+						left: 0;
+
+						// Display and Box Model
+						height: 100%;
+						width: 100%;
+						margin: 0;
+
+						// Others
+						font-family: var(--label-font-family);
+						font-size: var(--label-font-size);
+						color: var(--label-color);
+						font-weight: bold;
+
+						transition: 0.25s cubic-bezier(0.68, -0.6, 0.32, 1.6) transform,
+							opacity;
+
+						&:nth-of-type(even) {
+							// Others
+							color: rgba(0, 0, 0, 0); // transparent color
+							-webkit-text-stroke: 1px var(--label-color);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	.section__content {
@@ -66,7 +171,11 @@
 
 	.section__label {
 		z-index: 201;
-		transform: none;
+		transform: none !important; // !important because <Draggable />'s styles are inline
+
+		.label__wrapper {
+			transform: none;
+		}
 	}
 
 	.section__content {

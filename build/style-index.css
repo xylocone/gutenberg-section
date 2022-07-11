@@ -5,7 +5,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 100;
+  z-index: 0;
   height: var(--parent-height);
   width: var(--parent-width);
   -webkit-clip-path: var(--background-clip-path);
@@ -14,13 +14,87 @@
   transition: 0.5s ease clip-path;
 }
 .section__container .section__label {
+  /**
+   *
+   * Hierarchy of the <Label /> component is as follows:
+   * 
+   *	.section__label			<!-- translation is applied to this -->
+   *		.label__wrapper		<!-- rotation is applied to this -->
+   *			.label__handle   <!-- editor only -->
+   *			.label__container
+   *				.label__text
+   *				.label__clones-container
+   *					.label__clone * 4
+   *
+   *
+   */
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 0;
-  padding: 16px;
-  transform-origin: center;
-  transition: 0.5s ease all;
+  z-index: 100;
+  transition: 0.5s ease transform;
+  transform: var(--label-translate);
+  --label-font-family: "Comfortaa", sans-serif;
+  --label-font-size: 64px;
+  --label-color: #16d97e;
+}
+.section__container .section__label .label__wrapper {
+  transform: var(--label-rotate);
+  transition: 0.5s ease transform;
+}
+.section__container .section__label .label__wrapper.is-hovered .label__container .label__clones-container {
+  z-index: 1;
+}
+.section__container .section__label .label__wrapper.is-hovered .label__container .label__clones-container .label__clone:nth-of-type(1) {
+  transform: translateY(28.8%);
+  opacity: 0.7;
+}
+.section__container .section__label .label__wrapper.is-hovered .label__container .label__clones-container .label__clone:nth-of-type(2) {
+  transform: translateY(115.2%);
+  opacity: 0.4;
+}
+.section__container .section__label .label__wrapper.is-hovered .label__container .label__clones-container .label__clone:nth-of-type(3) {
+  transform: translateY(259.2%);
+  opacity: 0.1;
+}
+.section__container .section__label .label__wrapper.is-hovered .label__container .label__clones-container .label__clone:nth-of-type(4) {
+  transform: translateY(460.8%);
+  opacity: -0.2;
+}
+.section__container .section__label .label__wrapper .label__container {
+  position: relative;
+}
+.section__container .section__label .label__wrapper .label__container .label__text {
+  margin: 0;
+  font-family: var(--label-font-family);
+  font-size: var(--label-font-size);
+  color: var(--label-color);
+  font-weight: bold;
+}
+.section__container .section__label .label__wrapper .label__container .label__clones-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+}
+.section__container .section__label .label__wrapper .label__container .label__clones-container .label__clone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  font-family: var(--label-font-family);
+  font-size: var(--label-font-size);
+  color: var(--label-color);
+  font-weight: bold;
+  transition: 0.25s cubic-bezier(0.68, -0.6, 0.32, 1.6) transform, opacity;
+}
+.section__container .section__label .label__wrapper .label__container .label__clones-container .label__clone:nth-of-type(even) {
+  color: rgba(0, 0, 0, 0);
+  -webkit-text-stroke: 1px var(--label-color);
 }
 .section__container .section__content {
   position: absolute;
@@ -47,6 +121,9 @@
 }
 .section__container.is-opened .section__label {
   z-index: 201;
+  transform: none !important;
+}
+.section__container.is-opened .section__label .label__wrapper {
   transform: none;
 }
 .section__container.is-opened .section__content {

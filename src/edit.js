@@ -19,6 +19,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 		height: window.innerHeight,
 	});
 	const [isOpened, setIsOpened] = useState(false);
+	const [isLabelHovered, setIsLabelHovered] = useState(false);
 
 	// Update the parentDimensions state variable every time the parent's dimensions change
 	const containerRef = useElementDidMount((node) => {
@@ -57,6 +58,8 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 				updateAttribute,
 				isSelected,
 				isOpened,
+				isLabelHovered,
+				setIsLabelHovered,
 				setIsOpened,
 				parentDimensions,
 				updateCorner,
