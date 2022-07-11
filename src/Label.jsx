@@ -91,3 +91,34 @@ export default function Label() {
 		};
 	}
 }
+
+Label.Content = ({ attributes }) => {
+	return (
+		<div className="section__label" style={getCSSvariables()}>
+			<div className="label__wrapper">
+				<div className="label__container">
+					<RichText.Content
+						tagName="h2"
+						value={attributes.label}
+						className="label__text"
+					/>
+					<div className="label__clones-container">
+						{[...Array(3)].map((_value, index) => (
+							<h2 className="label__clone" key={index}>
+								{attributes.label}
+							</h2>
+						))}
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+
+	function getCSSvariables() {
+		const [x, y] = attributes.labelPos;
+		return {
+			"--label-rotate": `rotate(${attributes.labelRot}deg)`,
+			"--label-translate": `translate(calc(${x} * var(--width) / 100), calc(${y} * var(--height) / 100)`,
+		};
+	}
+};

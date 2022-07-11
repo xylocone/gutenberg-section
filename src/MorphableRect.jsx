@@ -3,7 +3,7 @@ import { useContext } from "@wordpress/element";
 import AttributesContext from "./AttributesContext";
 import Points from "./Points";
 
-function MorphableRect({ children }) {
+export default function MorphableRect({ children }) {
 	const { attributes, updateCorner, parentDimensions, isSelected, isOpened } =
 		useContext(AttributesContext);
 
@@ -66,4 +66,27 @@ function MorphableRect({ children }) {
 	}
 }
 
-export default MorphableRect;
+MorphableRect.Content = ({ attributes, children }) => {
+	return (
+		<>
+			<div className="section__background" style={getCSSvars()}></div>
+			{children}
+		</>
+	);
+
+	function getCSSvars() {
+		return {
+			"--parent-height": "var(--height)",
+			"--parent-width": "var(--width)",
+			"--background-clip-path": getClipPathValue(),
+			"--background":
+				attributes.style?.color.background ??
+				`var(--wp--preset--color--${attributes.backgroundColor})`,
+		};
+	}
+
+	function getClipPathValue() {
+		const { top, right, bottom, left } = attributes.corners;
+		return `polygon(${top[0]}% ${top[1]}%, ${right[0]}% ${right[1]}%, ${bottom[0]}% ${bottom[1]}%, ${left[0]}% ${left[1]}%)`;
+	}
+};

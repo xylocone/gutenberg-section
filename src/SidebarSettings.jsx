@@ -31,10 +31,10 @@ export default function SidebarSettings() {
 				<PanelBody title={__("Content")} initialOpen={false}>
 					<PanelRow>
 						<fieldset>
-							<legend>{__("Source Page")}</legend>
+							<legend>{__("Source Page slug")}</legend>
 							<TextControl
 								onChange={updateAttribute("source")}
-								placeholder={__("https://example.com/about")}
+								placeholder={__("sample-page")}
 								value={attributes.source}
 							/>
 						</fieldset>

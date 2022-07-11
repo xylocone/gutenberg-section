@@ -9,7 +9,7 @@ export default function Content() {
 	}, []);
 
 	return (
-		<div className={`section__content ${content ? "content-fetched" : ""}`}>
+		<div className={`section__content ${content ? "is-content-visible" : ""}`}>
 			{content ?? "Loading..."}
 		</div>
 	);
@@ -20,3 +20,9 @@ export default function Content() {
 		);
 	}
 }
+
+Content.Content = ({ attributes }) => {
+	return (
+		<div className="section__content" data-source={attributes.source}></div>
+	);
+};

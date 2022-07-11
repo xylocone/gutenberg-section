@@ -104,8 +104,9 @@
   height: calc(0.8 * var(--parent-height));
   padding: 16px;
   overflow: auto;
-  transform: translateX(-100vw);
+  transform: translateY(50px);
   opacity: 0;
+  pointer-events: none;
   transition: 0.5s ease all;
   scrollbar-width: 0;
   -ms-overflow-style: none;
@@ -129,9 +130,10 @@
 .section__container.is-opened .section__content {
   z-index: 202;
 }
-.section__container.is-opened .section__content.content-fetched {
+.section__container.is-opened .section__content.is-content-visible {
   transform: none;
   opacity: 1;
+  pointer-events: all;
 }
 
 /*# sourceMappingURL=style-index.css.map*/
